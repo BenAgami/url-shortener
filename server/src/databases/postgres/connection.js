@@ -3,7 +3,9 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-const config = {
+const DB_NAME = "urls_shortener";
+
+const clientConfig = {
   host: process.env.PGHOST,
   user: process.env.PGUSER,
   password: process.env.PGPASSWORD,
@@ -12,23 +14,19 @@ const config = {
 };
 
 const createPGDatabase = async () => {
-  const client = new Client(config);
+  const client = new Client(clientConfig);
 
   try {
     await client.connect();
-    const res = await client.query(
-      `SELECT 1 FROM pg_database WHERE datname='${dbName}'`
-    );
-    if (res.rowCount === 0) {
-      await client.query(`CREATE DATABASE ${dbName}`);
-      console.log(`Database '${dbName}' created successfully.`);
-    } else {
-      console.log(`Database '${dbName}' already exists.`);
-    }
-  } catch (err) {
-    console.error("Error creating database:", err);
+
+    const createDB = `CREATE DATABASE ${DB_NAME}`;
+    await client.query(createDB);
+    console.log(`Database "${DB_NAME}" created successfully`);
+  } catch (error) {
+    console.error("Error while creating database", error);
   } finally {
     await client.end();
+    console.log(`Disconnected from database ${DB_NAME}`);
   }
 };
 
