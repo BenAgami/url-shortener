@@ -1,7 +1,6 @@
-const swaggerJSDoc = require("swagger-jsdoc");
+const swaggerAutogen = require("swagger-autogen")();
 
-const swaggerDefinition = {
-  openapi: "3.0.0",
+const doc = {
   info: {
     title: "URL SHORTENING",
     version: "1.0.0",
@@ -9,13 +8,11 @@ const swaggerDefinition = {
                 https://example.com/assets/category_B/subcategory_C/Foo/ can be shortened to
                 https://example.com/Foo`,
   },
+  host: "localhost:8080",
+  schemes: ["http"],
 };
 
-const options = {
-  swaggerDefinition,
-  //change the path?
-  apis: ["./server/src/routes*.js"],
-};
+const outputFile = "./swagger.json";
+const endpointsFiles = ["../app/index.js"];
 
-const swaggerSpec = swaggerJSDoc(options);
-module.exports = swaggerSpec;
+swaggerAutogen(outputFile, endpointsFiles, doc);
