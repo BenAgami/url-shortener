@@ -1,0 +1,117 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "URL SHORTENING",
+    "version": "1.0.0",
+    "description": "The service let the customer to get a shorter url. For example, the URL\n                https://example.com/assets/category_B/subcategory_C/Foo/ can be shortened to\n                https://example.com/Foo"
+  },
+  "host": "localhost:8080",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "URL"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/url": {
+      "get": {
+        "tags": [
+          "URL"
+        ],
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/url/createShortUrl/{originalUrl}": {
+      "post": {
+        "tags": [
+          "URL"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "originalUrl",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/url/startWith/{startWith}": {
+      "get": {
+        "tags": [
+          "URL"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "startWith",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/url/contains/{contains}": {
+      "get": {
+        "tags": [
+          "URL"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "contains",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/url/noContains/{noContains}": {
+      "get": {
+        "tags": [
+          "URL"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "noContains",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    }
+  }
+}
