@@ -1,0 +1,5 @@
+Swagger autogen doc - https://swagger-autogen.github.io/docs/
+An article in medium about swagger autogen - https://medium.com/@eduardo-diogo/documentando-rest-api-com-swagger-d25740e721a6
+A video about swagger autogen - https://www.youtube.com/watch?v=Ck-CoNNn89g
+Conventional commits - https://arunkumarvallal.medium.com/become-a-pro-at-commit-messages-using-commitlint-56dab86333b3
+How to change git commit message - https://linuxize.com/post/change-git-commit-message/
