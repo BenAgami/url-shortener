@@ -1,18 +1,24 @@
 const express = require("express");
 const router = express.Router();
-const Url = require("../utils/models/url");
+const {
+  getUrls,
+  findOneByShortenerUrl,
+  createUrl,
+  modifyUrl,
+  deleteUrl,
+} = require("../services/urls");
 
 router.get("/all", async (_, res) => {
   // #swagger.tags = ['URL']
   // #swagger.summary = 'Gets all urls'
   try {
-    const data = await Url.findAll();
+    const urls = await getUrls();
 
-    if (!data) {
+    if (!urls) {
       res.status(404).send({ message: "Urls not found" });
     }
 
-    res.status(200).send(data);
+    res.status(200).send(urls);
   } catch (error) {
     res.status(500).send({ error: { error } });
   }
@@ -22,8 +28,8 @@ router.get("/:shortUrl", async (req, res) => {
   // #swagger.tags = ['URL']
   // #swagger.summary = 'Redirect to the original url'
   try {
-    const { shortUrl } = req.params;
-    const url = await Url.findOne({ shortenerUrl: shortUrl });
+    const { shortenerUrl } = req.params;
+    const url = await findOneByShortenerUrl(shortenerUrl);
 
     if (!url) {
       res.status(404).send({ message: "Url not found" });
@@ -36,16 +42,17 @@ router.get("/:shortUrl", async (req, res) => {
     res.status(500).send({ error: { error } });
   }
 });
-router.post("/", async (req, res) => {
+
+router.post("/createUrl", async (req, res) => {
   // #swagger.tags = ['URL']
   // #swagger.summary = 'Creates a new shortener url'
   try {
     const { originalUrl, shortenerUrl } = req.body;
-    const url = await Url.findOne({ shortenerUrl: shortenerUrl });
-    if (url) {
-      res.status(409).send({ message: "Shortener url is already exists" });
+    const newUrl = await createUrl(originalUrl, shortenerUrl);
+
+    if (!newUrl) {
+      res.status(409).send({ message: "Shortener url is already exist" });
     }
-    const newUrl = await Url.create({ originalUrl, shortenerUrl });
 
     res.status(200).send(newUrl);
   } catch (error) {
@@ -53,30 +60,36 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.patch("/", async (req, res) => {
+router.patch("/modifyUrl", async (req, res) => {
   // #swagger.tags = ['URL']
   // #swagger.summary = 'Updates an existing URL'
   try {
-    const { originalUrl } = req.body;
+    const { shortenerUrl, newShortenerUrl } = req.body;
+    const newUrl = await modifyUrl(shortenerUrl, newShortenerUrl);
 
-    res.status(200).send({ message: "Successfully updated" });
+    if (newUrl === -1) {
+      res.status(404).send({ message: "Url not found" });
+    }
+
+    if (newUrl === 0) {
+      res.status(409).send({ message: "Shortener url is already exist" });
+    }
+
+    res.status(200).send(newUrl);
   } catch (error) {
     res.status(500).send({ error: { error } });
   }
 });
 
-router.delete("/deleteUrl/:urlId", async (req, res) => {
+router.delete("/deleteUrl", async (req, res) => {
   // #swagger.tags = ['URL']
   // #swagger.summary = 'Deleting an existing URL'
   try {
-    const urlId = req.params.urlId;
-    const deletedUrl = await Url.findByPk(urlId);
+    const deletedUrl = await deleteUrl();
 
     if (!deletedUrl) {
       res.status(404).send({ message: "Url not found" });
     }
-
-    await deletedUrl.destroy();
 
     res.status(200).send(deletedUrl);
   } catch (error) {
