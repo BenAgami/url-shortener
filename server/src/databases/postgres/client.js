@@ -5,9 +5,9 @@ dotenv.config();
 
 const clientConfig = {
   host: process.env.PGHOST,
-  user: process.env.PGUSER,
-  password: process.env.PGPASSWORD,
-  port: process.env.PGPORT,
+  user: process.env.PG_USER,
+  password: process.env.PG_PASSWORD,
+  port: process.env.PG_PORT,
   database: "postgres",
 };
 
