@@ -6,9 +6,20 @@ router.get("/", async (req, res) => {
   // #swagger.summury = Gets all the objects, their ids, original urls, short urls
 });
 
-router.post("/createShortUrl/:originalUrl", async (req, res) => {
+router.post("/createShortUrl", async (req, res) => {
   // #swagger.tags = ['URL']
   // #swagger.summury = Creates a new object which contains everything I wrote above
+  /* #swagger.parameters['body'] = {
+          in: 'body',
+          required: true,
+          content: {
+                "application/json": {
+                    schema: {
+                        $ref: "#/components/schemas/urlSchema"
+                    }  
+                }
+            }
+  } */
 });
 
 router.get("/startWith/:startWith", async (req, res) => {

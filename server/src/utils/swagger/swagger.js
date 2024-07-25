@@ -15,10 +15,24 @@ const doc = {
       name: "URL",
     },
   ],
+  components: {
+    schemas: {
+      urlSchema: {
+        type: "object",
+        properties: {
+          originalUrl: {
+            type: "string",
+            example: "https://example.com/assets/category_B/subcategory_C/Foo/",
+          },
+        },
+        required: ["originalUrl"],
+      },
+    },
+  },
 };
 
-const outputFile = "../utils/swagger/swagger.json";
-const endpointsFiles = ["../app/index.js"];
+const outputFile = "./swagger.json";
+const endpointsFiles = ["../../app/index.js"];
 
 const swaggerAG = swaggerAutogen(outputFile, endpointsFiles, doc);
 module.exports = swaggerAG;
