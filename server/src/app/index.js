@@ -5,7 +5,6 @@ const morgan = require("morgan");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("../utils/swagger/swagger.json");
 const routers = require("../routes");
-require("../utils/swagger/swagger");
 
 dotenv.config();
 
