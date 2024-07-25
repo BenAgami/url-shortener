@@ -15,20 +15,6 @@ const doc = {
       name: "URL",
     },
   ],
-  components: {
-    schemas: {
-      urlSchema: {
-        type: "object",
-        properties: {
-          originalUrl: {
-            type: "string",
-            example: "https://example.com/assets/category_B/subcategory_C/Foo/",
-          },
-        },
-        required: ["originalUrl"],
-      },
-    },
-  },
 };
 
 const outputFile = "./swagger.json";

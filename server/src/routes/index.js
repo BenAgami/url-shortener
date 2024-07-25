@@ -3,23 +3,27 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   // #swagger.tags = ['URL']
-  // #swagger.summury = Gets all the objects, their ids, original urls, short urls
+  // #swagger.summary = 'Gets all urls'
 });
 
-router.post("/createShortUrl", async (req, res) => {
+router.post("/", async (req, res) => {
   // #swagger.tags = ['URL']
-  // #swagger.summury = Creates a new object which contains everything I wrote above
-  /* #swagger.parameters['body'] = {
-          in: 'body',
-          required: true,
-          content: {
-                "application/json": {
-                    schema: {
-                        $ref: "#/components/schemas/urlSchema"
-                    }  
-                }
-            }
-  } */
+  // #swagger.summary = 'Creates a new shortener url'
+  const { originalUrl } = req.body;
+
+  return res.status(201).send();
+});
+
+router.put("/", async (req, res) => {
+  // #swagger.tags = ['URL']
+  // #swagger.summary = 'Updates an existing URL'
+  const { originalUrl, newUrl } = req.body;
+});
+
+router.delete("/", async (req, res) => {
+  // #swagger.tags = ['URL']
+  // #swagger.summary = 'Deleting an existing URL'
+  const { originalUrl } = req.body;
 });
 
 router.get("/startWith/:startWith", async (req, res) => {

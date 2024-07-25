@@ -16,31 +16,89 @@
     "http"
   ],
   "paths": {
-    "/url": {
+    "/url/": {
       "get": {
         "tags": [
           "URL"
         ],
+        "summary": "Gets all urls",
         "description": "",
         "responses": {
           "default": {
             "description": ""
           }
         }
-      }
-    },
-    "/url/createShortUrl/{originalUrl}": {
+      },
       "post": {
         "tags": [
           "URL"
         ],
+        "summary": "Creates a new shortener url",
         "description": "",
         "parameters": [
           {
-            "name": "originalUrl",
-            "in": "path",
-            "required": true,
-            "type": "string"
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "originalUrl": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "URL"
+        ],
+        "summary": "Updates an existing URL",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "originalUrl": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "URL"
+        ],
+        "summary": "Deleting an existing URL",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "originalUrl": {
+                  "example": "any"
+                }
+              }
+            }
           }
         ],
         "responses": {
