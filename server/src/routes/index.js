@@ -10,14 +10,12 @@ router.post("/", async (req, res) => {
   // #swagger.tags = ['URL']
   // #swagger.summary = 'Creates a new shortener url'
   const { originalUrl } = req.body;
-
-  return res.status(201).send();
 });
 
-router.put("/", async (req, res) => {
+router.patch("/", async (req, res) => {
   // #swagger.tags = ['URL']
   // #swagger.summary = 'Updates an existing URL'
-  const { originalUrl, newUrl } = req.body;
+  const { originalUrl } = req.body;
 });
 
 router.delete("/", async (req, res) => {
