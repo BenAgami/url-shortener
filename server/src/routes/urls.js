@@ -67,11 +67,11 @@ router.patch("/modifyUrl", async (req, res) => {
     const { shortenerUrl, newShortenerUrl } = req.body;
     const newUrl = await modifyUrl(shortenerUrl, newShortenerUrl);
 
-    if (newUrl === -1) {
+    if (newUrl === "noOriginalUrl") {
       res.status(404).send({ message: "Url not found" });
     }
 
-    if (newUrl === 0) {
+    if (newUrl === "noNewUrl") {
       res.status(409).send({ message: "Shortener url is already exist" });
     }
 

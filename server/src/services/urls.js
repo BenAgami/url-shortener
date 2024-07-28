@@ -21,11 +21,11 @@ const createUrl = async (originalUrl, shortenerUrl) => {
 const modifyUrl = async (shortenerUrl, newShortenerUrl) => {
   const urlOriginalShortenerUrl = await findOneByShortenerUrl(shortenerUrl);
   if (!urlOriginalShortenerUrl) {
-    return -1;
+    return "noOriginalUrl";
   }
   const urlNewShortenerUrl = await findOneByShortenerUrl(newShortenerUrl);
   if (!urlNewShortenerUrl) {
-    return 0;
+    return "noNewUrl";
   }
   const newUrl = await Url.update({ shortenerUrl: newShortenerUrl });
   return newUrl;
