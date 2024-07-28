@@ -12,27 +12,55 @@
       "name": "URL"
     }
   ],
-  "schemes": [
-    "http"
-  ],
+  "schemes": ["http"],
   "paths": {
-    "/url/": {
+    "/url/all": {
       "get": {
-        "tags": [
-          "URL"
-        ],
+        "tags": ["URL"],
         "summary": "Gets all urls",
         "description": "",
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
-      },
-      "post": {
-        "tags": [
-          "URL"
+      }
+    },
+    "/url/{shortUrl}": {
+      "get": {
+        "tags": ["URL"],
+        "summary": "Redirect to the original url",
+        "description": "",
+        "parameters": [
+          {
+            "name": "shortUrl",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
         ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/url/": {
+      "post": {
+        "tags": ["URL"],
         "summary": "Creates a new shortener url",
         "description": "",
         "parameters": [
@@ -44,21 +72,28 @@
               "properties": {
                 "originalUrl": {
                   "example": "any"
+                },
+                "shortenerUrl": {
+                  "example": "any"
                 }
               }
             }
           }
         ],
         "responses": {
-          "201": {
-            "description": "Created"
+          "200": {
+            "description": "OK"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       },
-      "put": {
-        "tags": [
-          "URL"
-        ],
+      "patch": {
+        "tags": ["URL"],
         "summary": "Updates an existing URL",
         "description": "",
         "parameters": [
@@ -76,43 +111,44 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
-      },
+      }
+    },
+    "/url/deleteUrl/{urlId}": {
       "delete": {
-        "tags": [
-          "URL"
-        ],
+        "tags": ["URL"],
         "summary": "Deleting an existing URL",
         "description": "",
         "parameters": [
           {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "originalUrl": {
-                  "example": "any"
-                }
-              }
-            }
+            "name": "urlId",
+            "in": "path",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
     },
     "/url/startWith/{startWith}": {
       "get": {
-        "tags": [
-          "URL"
-        ],
+        "tags": ["URL"],
         "description": "",
         "parameters": [
           {
@@ -131,9 +167,7 @@
     },
     "/url/contains/{contains}": {
       "get": {
-        "tags": [
-          "URL"
-        ],
+        "tags": ["URL"],
         "description": "",
         "parameters": [
           {
@@ -152,9 +186,7 @@
     },
     "/url/noContains/{noContains}": {
       "get": {
-        "tags": [
-          "URL"
-        ],
+        "tags": ["URL"],
         "description": "",
         "parameters": [
           {
