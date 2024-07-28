@@ -26,6 +26,7 @@
   "description": "",
   "devDependencies": {
     "eslint": "^9.7.0",
+    "supertest": "^7.0.0",
     "swagger-autogen": "^2.23.7"
   }
 }
