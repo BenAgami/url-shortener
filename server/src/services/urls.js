@@ -1,3 +1,4 @@
+const { where, Op } = require("sequelize");
 const Url = require("../utils/models/url");
 
 const getUrls = async () => {
@@ -39,10 +40,31 @@ const deleteUrl = async (shortenerUrl) => {
   }
   return;
 };
+
+const urlsStartsWith = async (letters) => {
+  const urlsStartWith = await Url.findAll({
+    where: { [Op.startsWith]: letters },
+  });
+  return urlsStartWith;
+};
+
+const urlsContains = async (letters) => {
+  const urlsContains = await Url.findAll({ where: { [Op.contains]: letters } });
+  return urlsContains;
+};
+
+const urlsNoContains = async (letters) => {
+  const urlsStartWith = await Url.findAll({ where: { [Op.notLike]: letters } });
+  return urlsStartWith;
+};
+
 module.exports = {
   getUrls,
   findOneByShortenerUrl,
   createUrl,
   modifyUrl,
   deleteUrl,
+  urlsStartsWith,
+  urlsContains,
+  urlsNoContains,
 };

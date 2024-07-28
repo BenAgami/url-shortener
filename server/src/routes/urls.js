@@ -6,6 +6,9 @@ const {
   createUrl,
   modifyUrl,
   deleteUrl,
+  urlsStartsWith,
+  urlsContains,
+  urlsNoContains,
 } = require("../services/urls");
 
 router.get("/all", async (_, res) => {
@@ -100,16 +103,52 @@ router.delete("/deleteUrl", async (req, res) => {
 router.get("/startWith/:startWith", async (req, res) => {
   // #swagger.tags = ['URL']
   // #swagger.summury = Gets all the short urls that starts with a specific word/letter
+  try {
+    const { startWith } = req.params;
+    const urls = urlsStartsWith(startWith);
+
+    if (!urls) {
+      res.status(404).send({ message: "Urls not found" });
+    }
+
+    res.send(200).send(urls);
+  } catch (error) {
+    res.status(500).send({ error: { error } });
+  }
 });
 
 router.get("/contains/:contains", async (req, res) => {
   // #swagger.tags = ['URL']
   // #swagger.summury = Gets all the short urls that contains a specific word/letter
+  try {
+    const { contains } = req.params;
+    const urls = urlsContains(contains);
+
+    if (!urls) {
+      res.status(404).send({ message: "Urls not found" });
+    }
+
+    res.send(200).send(urls);
+  } catch (error) {
+    res.status(500).send({ error: { error } });
+  }
 });
 
 router.get("/noContains/:noContains", async (req, res) => {
   // #swagger.tags = ['URL']
   // #swagger.summury = Gets all the short urls that contains a specific word/letter
+  try {
+    const { noContains } = req.params;
+    const urls = urlsNoContains(noContains);
+
+    if (!urls) {
+      res.status(404).send({ message: "Urls not found" });
+    }
+
+    res.send(200).send(urls);
+  } catch (error) {
+    res.status(500).send({ error: { error } });
+  }
 });
 
 module.exports = router;
