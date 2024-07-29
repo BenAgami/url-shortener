@@ -84,17 +84,19 @@ router.patch("/modifyUrl", async (req, res) => {
   }
 });
 
-router.delete("/deleteUrl", async (req, res) => {
+router.delete("/deleteUrl/:shortUrl", async (req, res) => {
   // #swagger.tags = ['URL']
   // #swagger.summary = 'Deleting an existing URL'
   try {
-    const deletedUrl = await deleteUrl();
+    const { shortenerUrl } = req.params;
 
-    if (!deletedUrl) {
+    const deletedUrl = await deleteUrl(shortenerUrl);
+
+    if (deletedUrl === "not found") {
       res.status(404).send({ message: "Url not found" });
     }
 
-    res.status(200).send(deletedUrl);
+    res.status(200).send({ message: `${shortenerUrl} deleted successfully` });
   } catch (error) {
     res.status(500).send({ error: { error } });
   }
