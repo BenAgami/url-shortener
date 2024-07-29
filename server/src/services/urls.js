@@ -28,15 +28,17 @@ const modifyUrl = async (shortenerUrl, newShortenerUrl) => {
   const urlOriginalShortenerUrl = await findOneByShortenerUrl(shortenerUrl);
 
   if (!urlOriginalShortenerUrl) {
-    return "noOriginalUrl";
+    return "noUrl";
   }
 
   const urlNewShortenerUrl = await findOneByShortenerUrl(newShortenerUrl);
-  if (!urlNewShortenerUrl) {
-    return "noNewUrl";
+  if (urlNewShortenerUrl) {
+    return "newUrlExist";
   }
 
-  const modifiedUrl = await Url.update({ shortenerUrl: newShortenerUrl });
+  const modifiedUrl = await urlOriginalShortenerUrl.update({
+    shortenerUrl: newShortenerUrl,
+  });
   return modifiedUrl;
 };
 
