@@ -18,16 +18,16 @@ router.get("/all", async (_, res) => {
     const urls = await getUrls();
 
     if (!urls) {
-      res.status(404).send({ message: "Urls not found" });
+      return res.status(404).send({ message: "Urls not found" });
     }
 
     res.status(200).send(urls);
   } catch (error) {
-    res.status(500).send({ error: { error } });
+    res.status(500).send({ error: error.message });
   }
 });
 
-router.get("/:shortUrl", async (req, res) => {
+router.get("/:shortenerUrl", async (req, res) => {
   // #swagger.tags = ['URL']
   // #swagger.summary = 'Redirect to the original url'
   try {
@@ -35,14 +35,14 @@ router.get("/:shortUrl", async (req, res) => {
     const url = await findOneByShortenerUrl(shortenerUrl);
 
     if (!url) {
-      res.status(404).send({ message: "Url not found" });
+      return res.status(404).send({ message: "Url not found" });
     }
 
     const directUrl = url.originalUrl;
 
     res.status(200).redirect(directUrl);
   } catch (error) {
-    res.status(500).send({ error: { error } });
+    res.status(500).send({ error: error.message });
   }
 });
 
@@ -54,12 +54,12 @@ router.post("/createUrl", async (req, res) => {
     const newUrl = await createUrl(originalUrl, shortenerUrl);
 
     if (!newUrl) {
-      res.status(409).send({ message: "Shortener url is already exist" });
+      return res.status(409).send({ message: "Shortener url already exist" });
     }
 
     res.status(200).send(newUrl);
   } catch (error) {
-    res.status(500).send({ error: { error } });
+    res.status(500).send({ error: error.message });
   }
 });
 
@@ -70,17 +70,17 @@ router.patch("/modifyUrl", async (req, res) => {
     const { shortenerUrl, newShortenerUrl } = req.body;
     const newUrl = await modifyUrl(shortenerUrl, newShortenerUrl);
 
-    if (newUrl === "noOriginalUrl") {
-      res.status(404).send({ message: "Url not found" });
-    }
-
-    if (newUrl === "noNewUrl") {
-      res.status(409).send({ message: "Shortener url is already exist" });
+    if (newUrl === "noUrl") {
+      return res.status(404).send({ message: "Url not found" });
+    } else if (newUrl === "newUrlExist") {
+      return res
+        .status(409)
+        .send({ message: "New shortener url already exist" });
     }
 
     res.status(200).send(newUrl);
   } catch (error) {
-    res.status(500).send({ error: { error } });
+    res.status(500).send({ error: error.message });
   }
 });
 
@@ -88,17 +88,17 @@ router.delete("/deleteUrl/:shortUrl", async (req, res) => {
   // #swagger.tags = ['URL']
   // #swagger.summary = 'Deleting an existing URL'
   try {
-    const { shortenerUrl } = req.params;
+    const { shortUrl } = req.params;
 
-    const deletedUrl = await deleteUrl(shortenerUrl);
+    const deletedUrl = await deleteUrl(shortUrl);
 
     if (deletedUrl === "not found") {
-      res.status(404).send({ message: "Url not found" });
+      return res.status(404).send({ message: "Url not found" });
     }
 
-    res.status(200).send({ message: `${shortenerUrl} deleted successfully` });
+    res.status(200).send({ message: `${shortUrl} deleted successfully` });
   } catch (error) {
-    res.status(500).send({ error: { error } });
+    res.status(500).send({ error: error.message });
   }
 });
 
@@ -110,12 +110,12 @@ router.get("/startWith/:startWith", async (req, res) => {
     const urls = urlsStartsWith(startWith);
 
     if (!urls) {
-      res.status(404).send({ message: "Urls not found" });
+      return res.status(404).send({ message: "Urls not found" });
     }
 
     res.send(200).send(urls);
   } catch (error) {
-    res.status(500).send({ error: { error } });
+    res.status(500).send({ error: error.message });
   }
 });
 
@@ -127,12 +127,12 @@ router.get("/contains/:contains", async (req, res) => {
     const urls = urlsContains(contains);
 
     if (!urls) {
-      res.status(404).send({ message: "Urls not found" });
+      return res.status(404).send({ message: "Urls not found" });
     }
 
     res.send(200).send(urls);
   } catch (error) {
-    res.status(500).send({ error: { error } });
+    res.status(500).send({ error: error.message });
   }
 });
 
@@ -144,12 +144,12 @@ router.get("/noContains/:noContains", async (req, res) => {
     const urls = urlsNoContains(noContains);
 
     if (!urls) {
-      res.status(404).send({ message: "Urls not found" });
+      return res.status(404).send({ message: "Urls not found" });
     }
 
     res.send(200).send(urls);
   } catch (error) {
-    res.status(500).send({ error: { error } });
+    res.status(500).send({ error: error.message });
   }
 });
 
