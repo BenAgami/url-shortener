@@ -1,5 +1,5 @@
 const Sequelize = require("sequelize");
-const { sequelize } = require("../../databases/database");
+const { sequelize } = require("../../databases/postgres/database");
 
 const Url = sequelize.define("url", {
   id: {
