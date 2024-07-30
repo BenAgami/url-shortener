@@ -3,7 +3,7 @@ version: "3.8"
 services:
   postgres:
     image: postgres:latest
-    container_name: example-database
+    container_name: postgres-database
     environment:
       POSTGRES_DB: url-database
       POSTGRES_USER: Ben
@@ -23,6 +23,26 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin_password
     ports:
       - "5050:80"
+    networks:
+      - pg-network
+
+  app:
+    image: url-shortener:latest
+    container_name: url-shortener
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - POSTGRES_DB=url-database
+      - POSTGRES_USER=Ben
+      - POSTGRES_PASSWORD=Agami
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DIALECT=postgres
+    depends_on:
+      - postgres
     networks:
       - pg-network
 
