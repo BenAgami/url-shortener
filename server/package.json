@@ -4,8 +4,8 @@
   "main": "src/app/index.js",
   "scripts": {
     "dev": "node src/app/index.js",
-    "swagger-autogen": "node src/utils/swagger2.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "swagger-autogen": "node src/utils/swagger/swagger.js",
+    "test": "jest"
   },
   "dependencies": {
     "compression": "^1.7.4",
@@ -16,7 +16,6 @@
     "morgan": "^1.10.0",
     "pg": "^8.12.0",
     "sequelize": "^6.37.3",
-    "shorturl": "^0.0.3",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
   },
@@ -26,7 +25,6 @@
   "description": "",
   "devDependencies": {
     "eslint": "^9.7.0",
-    "supertest": "^7.0.0",
     "swagger-autogen": "^2.23.7"
   }
 }
