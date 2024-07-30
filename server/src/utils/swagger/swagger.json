@@ -12,11 +12,15 @@
       "name": "URL"
     }
   ],
-  "schemes": ["http"],
+  "schemes": [
+    "http"
+  ],
   "paths": {
     "/url/all": {
       "get": {
-        "tags": ["URL"],
+        "tags": [
+          "URL"
+        ],
         "summary": "Gets all urls",
         "description": "",
         "responses": {
@@ -32,14 +36,16 @@
         }
       }
     },
-    "/url/{shortUrl}": {
+    "/url/{shortenerUrl}": {
       "get": {
-        "tags": ["URL"],
+        "tags": [
+          "URL"
+        ],
         "summary": "Redirect to the original url",
         "description": "",
         "parameters": [
           {
-            "name": "shortUrl",
+            "name": "shortenerUrl",
             "in": "path",
             "required": true,
             "type": "string"
@@ -58,9 +64,11 @@
         }
       }
     },
-    "/url/": {
+    "/url/createUrl": {
       "post": {
-        "tags": ["URL"],
+        "tags": [
+          "URL"
+        ],
         "summary": "Creates a new shortener url",
         "description": "",
         "parameters": [
@@ -91,9 +99,13 @@
             "description": "Internal Server Error"
           }
         }
-      },
+      }
+    },
+    "/url/modifyUrl": {
       "patch": {
-        "tags": ["URL"],
+        "tags": [
+          "URL"
+        ],
         "summary": "Updates an existing URL",
         "description": "",
         "parameters": [
@@ -103,7 +115,10 @@
             "schema": {
               "type": "object",
               "properties": {
-                "originalUrl": {
+                "shortenerUrl": {
+                  "example": "any"
+                },
+                "newShortenerUrl": {
                   "example": "any"
                 }
               }
@@ -114,20 +129,28 @@
           "200": {
             "description": "OK"
           },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          },
           "500": {
             "description": "Internal Server Error"
           }
         }
       }
     },
-    "/url/deleteUrl/{urlId}": {
+    "/url/deleteUrl/{shortUrl}": {
       "delete": {
-        "tags": ["URL"],
+        "tags": [
+          "URL"
+        ],
         "summary": "Deleting an existing URL",
         "description": "",
         "parameters": [
           {
-            "name": "urlId",
+            "name": "shortUrl",
             "in": "path",
             "required": true,
             "type": "string"
@@ -148,7 +171,9 @@
     },
     "/url/startWith/{startWith}": {
       "get": {
-        "tags": ["URL"],
+        "tags": [
+          "URL"
+        ],
         "description": "",
         "parameters": [
           {
@@ -159,15 +184,23 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
     },
     "/url/contains/{contains}": {
       "get": {
-        "tags": ["URL"],
+        "tags": [
+          "URL"
+        ],
         "description": "",
         "parameters": [
           {
@@ -178,15 +211,23 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
     },
     "/url/noContains/{noContains}": {
       "get": {
-        "tags": ["URL"],
+        "tags": [
+          "URL"
+        ],
         "description": "",
         "parameters": [
           {
@@ -197,8 +238,14 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
