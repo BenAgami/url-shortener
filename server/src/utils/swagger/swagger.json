@@ -1,0 +1,254 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "URL SHORTENING",
+    "version": "1.0.0",
+    "description": "The service let the customer to get a shorter url. For example, the URL\n                https://example.com/assets/category_B/subcategory_C/Foo/ can be shortened to\n                https://example.com/Foo"
+  },
+  "host": "localhost:8080",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "URL"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/url/all": {
+      "get": {
+        "tags": [
+          "URL"
+        ],
+        "summary": "Gets all urls",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/url/{shortenerUrl}": {
+      "get": {
+        "tags": [
+          "URL"
+        ],
+        "summary": "Redirect to the original url",
+        "description": "",
+        "parameters": [
+          {
+            "name": "shortenerUrl",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/url/createUrl": {
+      "post": {
+        "tags": [
+          "URL"
+        ],
+        "summary": "Creates a new shortener url",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "originalUrl": {
+                  "example": "any"
+                },
+                "shortenerUrl": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/url/modifyUrl": {
+      "patch": {
+        "tags": [
+          "URL"
+        ],
+        "summary": "Updates an existing URL",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "shortenerUrl": {
+                  "example": "any"
+                },
+                "newShortenerUrl": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/url/deleteUrl/{shortUrl}": {
+      "delete": {
+        "tags": [
+          "URL"
+        ],
+        "summary": "Deleting an existing URL",
+        "description": "",
+        "parameters": [
+          {
+            "name": "shortUrl",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/url/startWith/{startWith}": {
+      "get": {
+        "tags": [
+          "URL"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "startWith",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/url/contains/{contains}": {
+      "get": {
+        "tags": [
+          "URL"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "contains",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/url/noContains/{noContains}": {
+      "get": {
+        "tags": [
+          "URL"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "noContains",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  }
+}

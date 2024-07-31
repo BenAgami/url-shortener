@@ -1,0 +1,53 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres-database
+    environment:
+      POSTGRES_DB: url-database
+      POSTGRES_USER: Ben
+      POSTGRES_PASSWORD: Agami
+    ports:
+      - "5432:5432"
+    networks:
+      - pg-network
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pg-admin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin_password
+    ports:
+      - "5050:80"
+    networks:
+      - pg-network
+
+  app:
+    image: url-shortener:latest
+    container_name: url-shortener
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - POSTGRES_DB=url-database
+      - POSTGRES_USER=Ben
+      - POSTGRES_PASSWORD=Agami
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DIALECT=postgres
+    depends_on:
+      - postgres
+    networks:
+      - pg-network
+
+networks:
+  pg-network:
+
+volumes:
+  pg-data:
