@@ -6,8 +6,8 @@ const getAllUrls = async () => {
   return allUrls;
 };
 
-const findOneByShorterUrl = async (shortUrl) => {
-  const url = await Url.findOne({ where: { shorterUrl: shortUrl } });
+const findOneByShorterUrl = async (shorterUrl) => {
+  const url = await Url.findOne({ where: { shorterUrl: shorterUrl } });
   return url;
 };
 
@@ -22,19 +22,15 @@ const addNewUrl = async (originalUrl, shorterUrl) => {
   return;
 };
 
-const modifyUrl = async (shorterUrl, newShorterUrl) => {
-  const originalShorterUrl = await findOneByShorterUrl(shorterUrl); // change this name
-  if (!originalShorterUrl) {
-    return "noUrl";
+const modifyUrl = async (originalUrl, shorterUrl) => {
+  const url = await findOneByShorterUrl(shorterUrl);
+
+  if (!url) {
+    return;
   }
 
-  const findNewShorterUrl = await findOneByShorterUrl(newShorterUrl);
-  if (findNewShorterUrl) {
-    return "newUrlExist";
-  }
-
-  const modifiedUrl = await originalShorterUrl.update({
-    shorterUrl: newShorterUrl,
+  const modifiedUrl = await url.update({
+    originalUrl: originalUrl,
   });
 
   return modifiedUrl;

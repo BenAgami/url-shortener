@@ -48,13 +48,13 @@ router.get("/:shorterUrl", async (req, res) => {
 
 router.post("/createUrl", async (req, res) => {
   // #swagger.tags = ['URL']
-  // #swagger.summary = 'Creates a new shortener url'
+  // #swagger.summary = 'Creates a new shorter url'
   try {
     const { originalUrl, shorterUrl } = req.body;
     const newUrl = await addNewUrl(originalUrl, shorterUrl);
 
     if (!newUrl) {
-      return res.status(409).send({ message: "Shortener url already exist" });
+      return res.status(409).send({ message: "Shorter url already exist" });
     }
 
     res.status(200).send(newUrl);
@@ -63,19 +63,18 @@ router.post("/createUrl", async (req, res) => {
   }
 });
 
+//change it because i changed the service
 router.patch("/modifyUrl", async (req, res) => {
   // #swagger.tags = ['URL']
   // #swagger.summary = 'Updates an existing URL'
   try {
-    const { shorterUrl, newShorterUrl } = req.body;
-    const newUrl = await modifyUrl(shorterUrl, newShorterUrl);
+    const { shorterUrl, newOriginalUrl } = req.body;
+    const newUrl = await modifyUrl(shorterUrl, newOriginalUrl);
 
     if (newUrl === "noUrl") {
       return res.status(404).send({ message: "Url not found" });
     } else if (newUrl === "newUrlExist") {
-      return res
-        .status(409)
-        .send({ message: "New shortener url already exist" });
+      return res.status(409).send({ message: "New shorter url already exist" });
     }
 
     res.status(200).send(newUrl);
