@@ -4,7 +4,7 @@ const {
   getAllUrls,
   findOneByShorterUrl,
   addNewUrl,
-  modifyUrl,
+  modifyOriginalUrl,
   deleteUrl,
   urlsStartsWith,
   urlsContains,
@@ -23,6 +23,7 @@ router.get("/all", async (_, res) => {
 
     res.status(200).send(urls);
   } catch (error) {
+    console.error("Error fetching data:", error);
     res.status(500).send({ error: error.message });
   }
 });
@@ -42,6 +43,7 @@ router.get("/:shorterUrl", async (req, res) => {
 
     res.status(200).redirect(directUrl);
   } catch (error) {
+    console.error("Error fetching data:", error);
     res.status(500).send({ error: error.message });
   }
 });
@@ -59,6 +61,7 @@ router.post("/createUrl", async (req, res) => {
 
     res.status(200).send(newUrl);
   } catch (error) {
+    console.error("Error creating url:", error);
     res.status(500).send({ error: error.message });
   }
 });
@@ -69,16 +72,17 @@ router.patch("/modifyUrl", async (req, res) => {
   // #swagger.summary = 'Updates an existing URL'
   try {
     const { shorterUrl, newOriginalUrl } = req.body;
-    const newUrl = await modifyUrl(shorterUrl, newOriginalUrl);
+    const newUrl = await modifyOriginalUrl(shorterUrl, newOriginalUrl);
 
-    if (newUrl === "noUrl") {
-      return res.status(404).send({ message: "Url not found" });
-    } else if (newUrl === "newUrlExist") {
-      return res.status(409).send({ message: "New shorter url already exist" });
+    if (!newUrl) {
+      return res
+        .status(409)
+        .send({ message: "New original url already exist" });
     }
 
     res.status(200).send(newUrl);
   } catch (error) {
+    console.error("Error update url:", error);
     res.status(500).send({ error: error.message });
   }
 });
@@ -97,6 +101,7 @@ router.delete("/deleteUrl/:shortUrl", async (req, res) => {
 
     res.status(200).send({ message: `${shortUrl} deleted successfully` });
   } catch (error) {
+    console.error("Error deleting url:", error);
     res.status(500).send({ error: error.message });
   }
 });
@@ -114,6 +119,7 @@ router.get("/startWith/:startWith", async (req, res) => {
 
     res.send(200).send(urls);
   } catch (error) {
+    console.error("Error fetching data:", error);
     res.status(500).send({ error: error.message });
   }
 });
@@ -131,6 +137,7 @@ router.get("/contains/:contains", async (req, res) => {
 
     res.send(200).send(urls);
   } catch (error) {
+    console.error("Error fetching data:", error);
     res.status(500).send({ error: error.message });
   }
 });
@@ -148,6 +155,7 @@ router.get("/noContains/:noContains", async (req, res) => {
 
     res.send(200).send("heyy");
   } catch (error) {
+    console.error("Error fetching data:", error);
     res.status(500).send({ error: error.message });
   }
 });
