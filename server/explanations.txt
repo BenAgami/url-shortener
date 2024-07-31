@@ -3,3 +3,7 @@ what is cors (Cross-origin resource sharing)?: זה מנגנון לשילוב י
 use?: אפליקציות מורכבות בדרך כלל מתייחסות לממשקי api
 של צד שלישי בקוד בצד הלקוח שלהם.
 בסופו של דבר אנו נשתמש בזה בשביל לשפר את האבטחה שלנו כי זה עוזר למנוע מאתרים זדוניים לגשת למידע רגיש בשרת שלנו.
+
+
+what is morgan?: It is an HTTP req logger middleware for node.js. The combined gives it's own format. With this format the information
+is more detailed about each req (like time, user id etc.) 
