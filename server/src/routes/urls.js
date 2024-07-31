@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const {
-  getUrls,
-  findOneByShortenerUrl,
-  createUrl,
+  getAllUrls,
+  findOneByShorterUrl,
+  addNewUrl,
   modifyUrl,
   deleteUrl,
   urlsStartsWith,
@@ -15,7 +15,7 @@ router.get("/all", async (_, res) => {
   // #swagger.tags = ['URL']
   // #swagger.summary = 'Gets all urls'
   try {
-    const urls = await getUrls();
+    const urls = await getAllUrls();
 
     if (!urls) {
       return res.status(404).send({ message: "Urls not found" });
@@ -27,12 +27,12 @@ router.get("/all", async (_, res) => {
   }
 });
 
-router.get("/:shortenerUrl", async (req, res) => {
+router.get("/:shorterUrl", async (req, res) => {
   // #swagger.tags = ['URL']
   // #swagger.summary = 'Redirect to the original url'
   try {
-    const { shortenerUrl } = req.params;
-    const url = await findOneByShortenerUrl(shortenerUrl);
+    const { shorterUrl } = req.params;
+    const url = await findOneByShorterUrl(shorterUrl);
 
     if (!url) {
       return res.status(404).send({ message: "Url not found" });
@@ -50,8 +50,8 @@ router.post("/createUrl", async (req, res) => {
   // #swagger.tags = ['URL']
   // #swagger.summary = 'Creates a new shortener url'
   try {
-    const { originalUrl, shortenerUrl } = req.body;
-    const newUrl = await createUrl(originalUrl, shortenerUrl);
+    const { originalUrl, shorterUrl } = req.body;
+    const newUrl = await addNewUrl(originalUrl, shorterUrl);
 
     if (!newUrl) {
       return res.status(409).send({ message: "Shortener url already exist" });
@@ -67,8 +67,8 @@ router.patch("/modifyUrl", async (req, res) => {
   // #swagger.tags = ['URL']
   // #swagger.summary = 'Updates an existing URL'
   try {
-    const { shortenerUrl, newShortenerUrl } = req.body;
-    const newUrl = await modifyUrl(shortenerUrl, newShortenerUrl);
+    const { shorterUrl, newShorterUrl } = req.body;
+    const newUrl = await modifyUrl(shorterUrl, newShorterUrl);
 
     if (newUrl === "noUrl") {
       return res.status(404).send({ message: "Url not found" });

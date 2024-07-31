@@ -9,13 +9,13 @@ const Url = sequelize.define("mockedUrl", {
     primaryKey: true,
   },
   originalUrl: Sequelize.STRING,
-  shortenerUrl: Sequelize.STRING,
+  shorterUrl: Sequelize.STRING,
 });
 
 const addMockings = async () => {
   const mockedUrl = {
     originalUrl: "http://google.com/",
-    shortenerUrl: "google",
+    shorterUrl: "google",
   };
 
   await Url.create(mockedUrl);

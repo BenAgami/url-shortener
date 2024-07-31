@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-const sequelize = new Sequelize(
+const sequelizeUrlDB = new Sequelize(
   process.env.POSTGRES_DB,
   process.env.POSTGRES_USER,
   process.env.POSTGRES_PASSWORD,
@@ -13,9 +13,9 @@ const sequelize = new Sequelize(
   }
 );
 
-const connectionTest = async () => {
+const testingConnection = async () => {
   try {
-    await sequelize.authenticate();
+    await sequelizeUrlDB.authenticate();
     console.log("Connection has been established successfully.");
   } catch (error) {
     console.error("Unable to connect to the database:", error);
@@ -24,7 +24,7 @@ const connectionTest = async () => {
 
 const modelSync = async () => {
   try {
-    await sequelize.sync();
+    await sequelizeUrlDB.sync();
     console.log("All models were synchronized successfully.");
   } catch (error) {
     console.log("Unable to synchronize all models:", error);
@@ -32,8 +32,8 @@ const modelSync = async () => {
 };
 
 const connection = async () => {
-  await connectionTest();
+  await testingConnection();
   await modelSync();
 };
 
-module.exports = { sequelize, connection };
+module.exports = { sequelizeUrlDB, connection };

@@ -1,7 +1,7 @@
 const Sequelize = require("sequelize");
-const { sequelize } = require("../../databases/postgres/database");
+const { sequelizeUrlDB } = require("../../databases/postgres/database");
 
-const Url = sequelize.define("url", {
+const UrlModel = sequelizeUrlDB.define("url", {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
@@ -9,7 +9,7 @@ const Url = sequelize.define("url", {
     primaryKey: true,
   },
   originalUrl: Sequelize.STRING,
-  shortenerUrl: Sequelize.STRING,
+  shorterUrl: Sequelize.STRING,
 });
 
-module.exports = Url;
+module.exports = UrlModel;

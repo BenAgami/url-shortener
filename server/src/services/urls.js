@@ -1,62 +1,61 @@
 const { Op } = require("sequelize");
 const Url = require("../utils/models/url");
 
-const getUrls = async () => {
-  const urls = await Url.findAll();
-  return urls;
+const getAllUrls = async () => {
+  const allUrls = await Url.findAll();
+  return allUrls;
 };
-const findOneByShortenerUrl = async (shortUrl) => {
-  const url = await Url.findOne({ where: { shortenerUrl: shortUrl } });
+
+const findOneByShorterUrl = async (shortUrl) => {
+  const url = await Url.findOne({ where: { shorterUrl: shortUrl } });
   return url;
 };
 
-const createUrl = async (originalUrl, shortenerUrl) => {
-  const url = await findOneByShortenerUrl(shortenerUrl);
+const addNewUrl = async (originalUrl, shorterUrl) => {
+  const url = await findOneByShorterUrl(shorterUrl);
 
   if (!url) {
-    const newUrl = await Url.create({
-      originalUrl: originalUrl,
-      shortenerUrl: shortenerUrl,
-    });
+    const newUrl = await createUrl(originalUrl, shorterUrl);
     return newUrl;
   }
 
   return;
 };
 
-const modifyUrl = async (shortenerUrl, newShortenerUrl) => {
-  const urlOriginalShortenerUrl = await findOneByShortenerUrl(shortenerUrl);
-
-  if (!urlOriginalShortenerUrl) {
+const modifyUrl = async (shorterUrl, newShorterUrl) => {
+  const originalShorterUrl = await findOneByShorterUrl(shorterUrl); // change this name
+  if (!originalShorterUrl) {
     return "noUrl";
   }
 
-  const urlNewShortenerUrl = await findOneByShortenerUrl(newShortenerUrl);
-  if (urlNewShortenerUrl) {
+  const findNewShorterUrl = await findOneByShorterUrl(newShorterUrl);
+  if (findNewShorterUrl) {
     return "newUrlExist";
   }
 
-  const modifiedUrl = await urlOriginalShortenerUrl.update({
-    shortenerUrl: newShortenerUrl,
+  const modifiedUrl = await originalShorterUrl.update({
+    shorterUrl: newShorterUrl,
   });
+
   return modifiedUrl;
 };
 
-const deleteUrl = async (shortenerUrl) => {
-  const url = await findOneByShortenerUrl(shortenerUrl);
+const deleteUrl = async (shorterUrl) => {
+  const url = await findOneByShorterUrl(shorterUrl);
 
   if (url) {
     await url.destroy();
     return;
   }
 
-  return "not found";
+  return "not found"; //null
 };
 
 const urlsStartsWith = async (letters) => {
   const urlsStartWith = await Url.findAll({
     where: { shortenerUrl: { [Op.startsWith]: letters } },
   });
+
   return urlsStartWith;
 };
 
@@ -64,6 +63,7 @@ const urlsContains = async (letters) => {
   const urlsContains = await Url.findAll({
     where: { shortenerUrl: { [Op.contains]: letters } },
   });
+
   return urlsContains;
 };
 
@@ -71,13 +71,23 @@ const urlsNoContains = async (letters) => {
   const urlsStartWith = await Url.findAll({
     where: { shortenerUrl: { [Op.notLike]: letters } },
   });
+
   return urlsStartWith;
 };
 
+const createUrl = async (originalUrl, shorterUrl) => {
+  const newUrl = await Url.create({
+    originalUrl: originalUrl,
+    shorterUrl: shorterUrl,
+  });
+
+  return newUrl;
+};
+
 module.exports = {
-  getUrls,
-  findOneByShortenerUrl,
-  createUrl,
+  getAllUrls,
+  findOneByShorterUrl,
+  addNewUrl,
   modifyUrl,
   deleteUrl,
   urlsStartsWith,
