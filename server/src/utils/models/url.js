@@ -1,6 +1,7 @@
 const Sequelize = require("sequelize");
-const { sequelizeUrlDB } = require("../../databases/postgres/database");
+const { sequelizeConnection } = require("../../databases/postgres/database");
 
+const sequelizeUrlDB = sequelizeConnection();
 const UrlModel = sequelizeUrlDB.define("url", {
   id: {
     type: Sequelize.INTEGER,

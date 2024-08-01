@@ -1,11 +1,11 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "main": "src/app/index.js",
+  "main": "./app.js",
   "scripts": {
-    "dev": "node src/app/index.js",
-    "swagger-autogen": "node src/utils/swagger/swagger.js",
-    "test": "mocha src/tests/url"
+    "dev": "node ./server/app.js",
+    "swagger-autogen": "node ./src/utils/swagger/swagger.json",
+    "test": "mocha ./src/tests/url"
   },
   "dependencies": {
     "compression": "^1.7.4",
