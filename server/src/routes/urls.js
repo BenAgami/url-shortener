@@ -10,6 +10,7 @@ const {
   urlsContains,
   urlsNoContains,
 } = require("../services/urls");
+const { StatusCodes } = require("http-status-codes");
 
 router.get("/all", async (_, res) => {
   // #swagger.tags = ['URL']
@@ -18,13 +19,17 @@ router.get("/all", async (_, res) => {
     const urls = await getAllUrls();
 
     if (!urls) {
-      return res.status(404).send({ message: "Urls not found" });
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .send({ message: "Urls not found" });
     }
 
-    res.status(200).send(urls);
+    res.status(StatusCodes.OK).send(urls);
   } catch (error) {
     console.error("Error fetching data:", error);
-    res.status(500).send({ error: error.message });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .send({ error: error.message });
   }
 });
 
@@ -36,15 +41,19 @@ router.get("/:shorterUrl", async (req, res) => {
     const url = await findOneByShorterUrl(shorterUrl);
 
     if (!url) {
-      return res.status(404).send({ message: "Url not found" });
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .send({ message: "Url not found" });
     }
 
     const directUrl = url.originalUrl;
 
-    res.status(200).redirect(directUrl);
+    res.status(StatusCodes.OK).redirect(directUrl);
   } catch (error) {
     console.error("Error fetching data:", error);
-    res.status(500).send({ error: error.message });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .send({ error: error.message });
   }
 });
 
@@ -55,14 +64,18 @@ router.post("/createUrl", async (req, res) => {
     const { originalUrl, shorterUrl } = req.body;
     const newUrl = await addNewUrl(originalUrl, shorterUrl);
 
-    if (!newUrl) {
-      return res.status(409).send({ message: "Shorter url already exist" });
+    if (newUrl === StatusCodes.CONFLICT) {
+      return res
+        .status(StatusCodes.CONFLICT)
+        .send({ message: "Shorter url already exist" });
     }
 
-    res.status(200).send(newUrl);
+    res.status(StatusCodes.CREATED).send(newUrl);
   } catch (error) {
     console.error("Error creating url:", error);
-    res.status(500).send({ error: error.message });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .send({ error: error.message });
   }
 });
 
@@ -76,14 +89,16 @@ router.patch("/modifyUrl", async (req, res) => {
 
     if (!newUrl) {
       return res
-        .status(409)
+        .status(StatusCodes.CONFLICT)
         .send({ message: "New original url already exist" });
     }
 
-    res.status(200).send(newUrl);
+    res.status(StatusCodes.OK).send(newUrl);
   } catch (error) {
     console.error("Error update url:", error);
-    res.status(500).send({ error: error.message });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .send({ error: error.message });
   }
 });
 
@@ -95,14 +110,20 @@ router.delete("/deleteUrl/:shortUrl", async (req, res) => {
 
     const deletedUrl = await deleteUrl(shortUrl);
 
-    if (deletedUrl === "not found") {
-      return res.status(404).send({ message: "Url not found" });
+    if (deletedUrl === StatusCodes.NOT_FOUND) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .send({ message: "Url not found" });
     }
 
-    res.status(200).send({ message: `${shortUrl} deleted successfully` });
+    res
+      .status(StatusCodes.OK)
+      .send({ message: `${shortUrl} deleted successfully` });
   } catch (error) {
     console.error("Error deleting url:", error);
-    res.status(500).send({ error: error.message });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .send({ error: error.message });
   }
 });
 
@@ -114,13 +135,17 @@ router.get("/startWith/:startWith", async (req, res) => {
     const urls = urlsStartsWith(startWith);
 
     if (!urls) {
-      return res.status(404).send({ message: "Urls not found" });
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .send({ message: "Urls not found" });
     }
 
-    res.send(200).send(urls);
+    res.send(StatusCodes.OK).send(urls);
   } catch (error) {
     console.error("Error fetching data:", error);
-    res.status(500).send({ error: error.message });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .send({ error: error.message });
   }
 });
 
@@ -132,13 +157,17 @@ router.get("/contains/:contains", async (req, res) => {
     const urls = urlsContains(contains);
 
     if (!urls) {
-      return res.status(404).send({ message: "Urls not found" });
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .send({ message: "Urls not found" });
     }
 
-    res.send(200).send(urls);
+    res.send(StatusCodes.OK).send(urls);
   } catch (error) {
     console.error("Error fetching data:", error);
-    res.status(500).send({ error: error.message });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .send({ error: error.message });
   }
 });
 
@@ -150,13 +179,17 @@ router.get("/noContains/:noContains", async (req, res) => {
     const urls = urlsNoContains(noContains);
 
     if (!urls) {
-      return res.status(404).send({ message: "Urls not found" });
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .send({ message: "Urls not found" });
     }
 
-    res.send(200).send("heyy");
+    res.send(StatusCodes.OK).send(urls);
   } catch (error) {
     console.error("Error fetching data:", error);
-    res.status(500).send({ error: error.message });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .send({ error: error.message });
   }
 });
 

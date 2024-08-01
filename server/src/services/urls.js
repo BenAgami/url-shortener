@@ -1,5 +1,6 @@
 const { Op } = require("sequelize");
 const Url = require("../utils/models/url");
+const { StatusCodes } = require("http-status-codes");
 
 const getAllUrls = async () => {
   const allUrls = await Url.findAll();
@@ -19,14 +20,14 @@ const addNewUrl = async (originalUrl, shorterUrl) => {
     return newUrl;
   }
 
-  return;
+  return StatusCodes.CONFLICT;
 };
 
-const modifyUrl = async (originalUrl, shorterUrl) => {
+const modifyOriginalUrl = async (originalUrl, shorterUrl) => {
   const url = await findOneByShorterUrl(shorterUrl);
 
   if (!url) {
-    return;
+    return StatusCodes.CONFLICT;
   }
 
   const modifiedUrl = await url.update({
@@ -40,11 +41,10 @@ const deleteUrl = async (shorterUrl) => {
   const url = await findOneByShorterUrl(shorterUrl);
 
   if (url) {
-    await url.destroy();
-    return;
+    return await url.destroy();
   }
 
-  return "not found"; //null
+  return StatusCodes.NOT_FOUND;
 };
 
 const urlsStartsWith = async (letters) => {
@@ -84,7 +84,7 @@ module.exports = {
   getAllUrls,
   findOneByShorterUrl,
   addNewUrl,
-  modifyUrl,
+  modifyOriginalUrl,
   deleteUrl,
   urlsStartsWith,
   urlsContains,
