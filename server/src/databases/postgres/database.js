@@ -16,6 +16,21 @@ const sequelizeConnection = () => {
   return sequelizeUrlDB;
 };
 
-module.exports = {
-  sequelizeConnection,
+const initialConnectionToDb = async () => {
+  const sequelizeUrlDB = await sequelizeConnection();
+
+  try {
+    await sequelizeUrlDB.authenticate();
+    console.log("Initial connection has been established successfully.");
+    await sequelizeUrlDB.sync();
+    console.log("All models were synchronized successfully.");
+  } catch (error) {
+    console.error("Unable to initial connect to the database:", error);
+    throw error;
+  }
+
+  await sequelizeUrlDB.close();
+  console.log("Initial connection closed.");
 };
+
+module.exports = { sequelizeConnection, initialConnectionToDb };

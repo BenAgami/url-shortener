@@ -1,22 +1,5 @@
 const { sequelizeConnection } = require("../databases/postgres/database");
 
-const initialConnectionToDb = async () => {
-  const sequelizeUrlDB = await sequelizeConnection();
-
-  try {
-    await sequelizeUrlDB.authenticate();
-    console.log("Initial connection has been established successfully.");
-    await sequelizeUrlDB.sync();
-    console.log("All models were synchronized successfully.");
-  } catch (error) {
-    console.error("Unable to initial connect to the database:", error);
-    throw error;
-  }
-
-  await sequelizeUrlDB.close();
-  console.log("Initial connection closed.");
-};
-
 const connectToDb = async (req, res, next) => {
   try {
     req.sequelizeUrlDB = await sequelizeConnection();
@@ -40,4 +23,4 @@ const disconnectFromDb = async (req, res, next) => {
   next();
 };
 
-module.exports = { initialConnectionToDb, connectToDb, disconnectFromDb };
+module.exports = { connectToDb, disconnectFromDb };

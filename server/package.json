@@ -4,7 +4,7 @@
   "main": "app.js",
   "scripts": {
     "dev": "node app.js",
-    "swagger-autogen": "node src/utils/swagger/swagger.json",
+    "swagger-autogen": "node src/utils/swagger/swagger.js",
     "test": "cross-env NODE_ENV=test mocha --timeout 10000 src/tests"
   },
   "dependencies": {
