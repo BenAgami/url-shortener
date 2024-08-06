@@ -1,30 +1,38 @@
+const { StatusCodes } = require("http-status-codes");
 const express = require("express");
 const router = express.Router();
+
 const {
   getAllUrls,
   findOneByShorterUrl,
   addNewUrl,
   modifyOriginalUrl,
   deleteUrl,
-  urlsStartsWith,
-  urlsContains,
-  urlsNoContains,
+  allUrlsStartsWith,
+  allUrlsContains,
+  allUrlsNoContains,
 } = require("../services/urls");
-const { StatusCodes } = require("http-status-codes");
+const {
+  URLS_ENTITIES_NOT_FOUND_MESSAGE,
+  URL_ENTITY_NOT_FOUND_MESSAGE,
+  SHORTER_URL_ENTITY_EXISTS_MESSAGE,
+  SHORTER_URL_NOT_FOUND_MESSAGE,
+  URL_NOT_FOUND_MESSAGE,
+} = require("../utils/consts");
 
 router.get("/all", async (_, res) => {
   // #swagger.tags = ['URL']
   // #swagger.summary = 'Gets all urls'
   try {
-    const urls = await getAllUrls();
+    const allUrls = await getAllUrls();
 
-    if (!urls) {
+    if (allUrls.length === 0) {
       return res
         .status(StatusCodes.NOT_FOUND)
-        .send({ message: "Urls not found" });
+        .send({ message: URLS_ENTITIES_NOT_FOUND_MESSAGE });
     }
 
-    res.status(StatusCodes.OK).send(urls);
+    res.status(StatusCodes.OK).send(allUrls);
   } catch (error) {
     console.error("Error fetching data:", error);
     res
@@ -43,12 +51,12 @@ router.get("/:shorterUrl", async (req, res) => {
     if (!url) {
       return res
         .status(StatusCodes.NOT_FOUND)
-        .send({ message: "Url not found" });
+        .send({ message: URL_ENTITY_NOT_FOUND_MESSAGE });
     }
 
     const directUrl = url.originalUrl;
 
-    res.status(StatusCodes.OK).redirect(directUrl);
+    res.status(StatusCodes.MOVED_TEMPORARILY).redirect(directUrl);
   } catch (error) {
     console.error("Error fetching data:", error);
     res
@@ -67,7 +75,7 @@ router.post("/createUrl", async (req, res) => {
     if (newUrl === StatusCodes.CONFLICT) {
       return res
         .status(StatusCodes.CONFLICT)
-        .send({ message: "Shorter url already exist" });
+        .send({ message: SHORTER_URL_ENTITY_EXISTS_MESSAGE });
     }
 
     res.status(StatusCodes.CREATED).send(newUrl);
@@ -87,10 +95,10 @@ router.patch("/modifyUrl", async (req, res) => {
     const { shorterUrl, newOriginalUrl } = req.body;
     const newUrl = await modifyOriginalUrl(shorterUrl, newOriginalUrl);
 
-    if (!newUrl) {
+    if (newUrl === StatusCodes.NOT_FOUND) {
       return res
-        .status(StatusCodes.CONFLICT)
-        .send({ message: "New original url already exist" });
+        .status(StatusCodes.NOT_FOUND)
+        .send({ message: SHORTER_URL_NOT_FOUND_MESSAGE });
     }
 
     res.status(StatusCodes.OK).send(newUrl);
@@ -113,7 +121,7 @@ router.delete("/deleteUrl/:shortUrl", async (req, res) => {
     if (deletedUrl === StatusCodes.NOT_FOUND) {
       return res
         .status(StatusCodes.NOT_FOUND)
-        .send({ message: "Url not found" });
+        .send({ message: URL_NOT_FOUND_MESSAGE });
     }
 
     res
@@ -127,20 +135,20 @@ router.delete("/deleteUrl/:shortUrl", async (req, res) => {
   }
 });
 
-router.get("/startWith/:startWith", async (req, res) => {
+router.get("/startWith/:startsWith", async (req, res) => {
   // #swagger.tags = ['URL']
   // #swagger.summury = Gets all the short urls that starts with a specific word/letter
   try {
-    const { startWith } = req.params;
-    const urls = urlsStartsWith(startWith);
+    const { startsWith } = req.params;
+    const urls = await allUrlsStartsWith(startsWith);
 
     if (!urls) {
       return res
         .status(StatusCodes.NOT_FOUND)
-        .send({ message: "Urls not found" });
+        .send({ message: URLS_ENTITIES_NOT_FOUND_MESSAGE });
     }
 
-    res.send(StatusCodes.OK).send(urls);
+    res.status(StatusCodes.OK).send(urls);
   } catch (error) {
     console.error("Error fetching data:", error);
     res
@@ -154,15 +162,15 @@ router.get("/contains/:contains", async (req, res) => {
   // #swagger.summury = Gets all the short urls that contains a specific word/letter
   try {
     const { contains } = req.params;
-    const urls = urlsContains(contains);
+    const urls = await allUrlsContains(contains);
 
     if (!urls) {
       return res
         .status(StatusCodes.NOT_FOUND)
-        .send({ message: "Urls not found" });
+        .send({ message: URLS_ENTITIES_NOT_FOUND_MESSAGE });
     }
 
-    res.send(StatusCodes.OK).send(urls);
+    res.status(StatusCodes.OK).send(urls);
   } catch (error) {
     console.error("Error fetching data:", error);
     res
@@ -176,15 +184,15 @@ router.get("/noContains/:noContains", async (req, res) => {
   // #swagger.summury = Gets all the short urls that contains a specific word/letter
   try {
     const { noContains } = req.params;
-    const urls = urlsNoContains(noContains);
+    const urls = await allUrlsNoContains(noContains);
 
     if (!urls) {
       return res
         .status(StatusCodes.NOT_FOUND)
-        .send({ message: "Urls not found" });
+        .send({ message: URLS_ENTITIES_NOT_FOUND_MESSAGE });
     }
 
-    res.send(StatusCodes.OK).send(urls);
+    res.status(StatusCodes.OK).send(urls);
   } catch (error) {
     console.error("Error fetching data:", error);
     res

@@ -1,14 +1,17 @@
-const { Op } = require("sequelize");
-const Url = require("../utils/models/url");
 const { StatusCodes } = require("http-status-codes");
+const { Op } = require("sequelize");
+
+const getUrlModel = require("../utils/models/url");
+
+const UrlModel = getUrlModel();
 
 const getAllUrls = async () => {
-  const allUrls = await Url.findAll();
+  const allUrls = await UrlModel.findAll();
   return allUrls;
 };
 
 const findOneByShorterUrl = async (shorterUrl) => {
-  const url = await Url.findOne({ where: { shorterUrl: shorterUrl } });
+  const url = await UrlModel.findOne({ where: { shorterUrl: shorterUrl } });
   return url;
 };
 
@@ -16,25 +19,26 @@ const addNewUrl = async (originalUrl, shorterUrl) => {
   const url = await findOneByShorterUrl(shorterUrl);
 
   if (!url) {
-    const newUrl = await createUrl(originalUrl, shorterUrl);
-    return newUrl;
+    const newUrl = getNewUrl(originalUrl, shorterUrl);
+    const addedNewUrl = await UrlModel.create(newUrl);
+    return addedNewUrl;
   }
 
   return StatusCodes.CONFLICT;
 };
 
-const modifyOriginalUrl = async (originalUrl, shorterUrl) => {
+const modifyOriginalUrl = async (shorterUrl, newOriginalUrl) => {
   const url = await findOneByShorterUrl(shorterUrl);
 
-  if (!url) {
-    return StatusCodes.CONFLICT;
+  if (url) {
+    const modifiedUrl = await url.update({
+      originalUrl: newOriginalUrl,
+    });
+
+    return modifiedUrl;
   }
 
-  const modifiedUrl = await url.update({
-    originalUrl: originalUrl,
-  });
-
-  return modifiedUrl;
+  return StatusCodes.NOT_FOUND;
 };
 
 const deleteUrl = async (shorterUrl) => {
@@ -47,37 +51,40 @@ const deleteUrl = async (shorterUrl) => {
   return StatusCodes.NOT_FOUND;
 };
 
-const urlsStartsWith = async (letters) => {
-  const urlsStartWith = await Url.findAll({
-    where: { shortenerUrl: { [Op.startsWith]: letters } },
+const allUrlsStartsWith = async (letters) => {
+  const urlsStartsWith = await UrlModel.findAll({
+    where: { shorterUrl: { [Op.startsWith]: letters } },
   });
 
-  return urlsStartWith;
+  return urlsStartsWith;
 };
 
-const urlsContains = async (letters) => {
-  const urlsContains = await Url.findAll({
-    where: { shortenerUrl: { [Op.contains]: letters } },
+const allUrlsContains = async (letters) => {
+  const urlsContains = await UrlModel.findAll({
+    where: { shorterUrl: { [Op.substring]: letters } },
   });
 
   return urlsContains;
 };
 
-const urlsNoContains = async (letters) => {
-  const urlsStartWith = await Url.findAll({
-    where: { shortenerUrl: { [Op.notLike]: letters } },
+const allUrlsNoContains = async (letters) => {
+  const urlsNoContains = await UrlModel.findAll({
+    where: { shorterUrl: { [Op.notLike]: `%${letters}%` } },
   });
 
-  return urlsStartWith;
+  return urlsNoContains;
 };
 
-const createUrl = async (originalUrl, shorterUrl) => {
-  const newUrl = await Url.create({
-    originalUrl: originalUrl,
-    shorterUrl: shorterUrl,
-  });
-
+const getNewUrl = (originalUrl, shorterUrl) => {
+  const newUrl = { originalUrl: originalUrl, shorterUrl: shorterUrl };
   return newUrl;
+};
+
+const deleteAllUrls = async () => {
+  await UrlModel.destroy({
+    where: {},
+    truncate: true,
+  });
 };
 
 module.exports = {
@@ -86,7 +93,8 @@ module.exports = {
   addNewUrl,
   modifyOriginalUrl,
   deleteUrl,
-  urlsStartsWith,
-  urlsContains,
-  urlsNoContains,
+  allUrlsStartsWith,
+  allUrlsContains,
+  allUrlsNoContains,
+  deleteAllUrls,
 };

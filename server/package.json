@@ -1,11 +1,11 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "main": "./app.js",
+  "main": "app.js",
   "scripts": {
-    "dev": "node ./server/app.js",
-    "swagger-autogen": "node ./src/utils/swagger/swagger.json",
-    "test": "mocha ./src/tests/url"
+    "dev": "node app.js",
+    "swagger-autogen": "node src/utils/swagger/swagger.json",
+    "test": "cross-env NODE_ENV=test mocha --timeout 10000 src/tests"
   },
   "dependencies": {
     "compression": "^1.7.4",
@@ -24,8 +24,9 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "chai": "^5.1.1",
+    "chai": "^4.2.0",
     "chai-http": "^5.0.0",
+    "cross-env": "^7.0.3",
     "http-status-codes": "^2.3.0",
     "mocha": "^10.7.0",
     "supertest": "^7.0.0",
