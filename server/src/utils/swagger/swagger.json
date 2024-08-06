@@ -12,52 +12,34 @@
       "name": "URL"
     }
   ],
-  "schemes": [
-    "http"
-  ],
+  "schemes": ["http"],
   "paths": {
     "/url/all": {
       "get": {
-        "tags": [
-          "URL"
-        ],
+        "tags": ["URL"],
         "summary": "Gets all urls",
         "description": "",
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
           "500": {
             "description": "Internal Server Error"
           }
         }
       }
     },
-    "/url/{shortenerUrl}": {
+    "/url/{shorterUrl}": {
       "get": {
-        "tags": [
-          "URL"
-        ],
+        "tags": ["URL"],
         "summary": "Redirect to the original url",
         "description": "",
         "parameters": [
           {
-            "name": "shortenerUrl",
+            "name": "shorterUrl",
             "in": "path",
             "required": true,
             "type": "string"
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
           "500": {
             "description": "Internal Server Error"
           }
@@ -66,10 +48,8 @@
     },
     "/url/createUrl": {
       "post": {
-        "tags": [
-          "URL"
-        ],
-        "summary": "Creates a new shortener url",
+        "tags": ["URL"],
+        "summary": "Creates a new shorter url",
         "description": "",
         "parameters": [
           {
@@ -81,7 +61,7 @@
                 "originalUrl": {
                   "example": "any"
                 },
-                "shortenerUrl": {
+                "shorterUrl": {
                   "example": "any"
                 }
               }
@@ -89,12 +69,6 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "409": {
-            "description": "Conflict"
-          },
           "500": {
             "description": "Internal Server Error"
           }
@@ -103,9 +77,7 @@
     },
     "/url/modifyUrl": {
       "patch": {
-        "tags": [
-          "URL"
-        ],
+        "tags": ["URL"],
         "summary": "Updates an existing URL",
         "description": "",
         "parameters": [
@@ -115,10 +87,10 @@
             "schema": {
               "type": "object",
               "properties": {
-                "shortenerUrl": {
+                "shorterUrl": {
                   "example": "any"
                 },
-                "newShortenerUrl": {
+                "newOriginalUrl": {
                   "example": "any"
                 }
               }
@@ -126,15 +98,6 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "409": {
-            "description": "Conflict"
-          },
           "500": {
             "description": "Internal Server Error"
           }
@@ -143,9 +106,7 @@
     },
     "/url/deleteUrl/{shortUrl}": {
       "delete": {
-        "tags": [
-          "URL"
-        ],
+        "tags": ["URL"],
         "summary": "Deleting an existing URL",
         "description": "",
         "parameters": [
@@ -157,39 +118,25 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
           "500": {
             "description": "Internal Server Error"
           }
         }
       }
     },
-    "/url/startWith/{startWith}": {
+    "/url/startWith/{startsWith}": {
       "get": {
-        "tags": [
-          "URL"
-        ],
+        "tags": ["URL"],
         "description": "",
         "parameters": [
           {
-            "name": "startWith",
+            "name": "startsWith",
             "in": "path",
             "required": true,
             "type": "string"
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
           "500": {
             "description": "Internal Server Error"
           }
@@ -198,9 +145,7 @@
     },
     "/url/contains/{contains}": {
       "get": {
-        "tags": [
-          "URL"
-        ],
+        "tags": ["URL"],
         "description": "",
         "parameters": [
           {
@@ -211,39 +156,25 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
           "500": {
             "description": "Internal Server Error"
           }
         }
       }
     },
-    "/url/noContains/{noContains}": {
+    "/url/notContains/{notContains}": {
       "get": {
-        "tags": [
-          "URL"
-        ],
+        "tags": ["URL"],
         "description": "",
         "parameters": [
           {
-            "name": "noContains",
+            "name": "notContains",
             "in": "path",
             "required": true,
             "type": "string"
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
           "500": {
             "description": "Internal Server Error"
           }

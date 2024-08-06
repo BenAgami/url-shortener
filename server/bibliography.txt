@@ -7,3 +7,4 @@ Node-postgres doc - https://node-postgres.com/
 An article in medium about swagger autogen - https://medium.com/@davibaltar/documenta%C3%A7%C3%A3o-autom%C3%A1tica-de-apis-em-node-js-com-swagger-parte-2-usando-openapi-v3-cbc371d8c5ee
 Sequelize Model Querying - https://sequelize.org/docs/v6/core-concepts/model-querying-finders/ 
 JavaScript CRUD Rest API: Nodejs, Express, Postgres, Sequelize, Docker - https://www.youtube.com/watch?v=Uv-jMWV29rU
+chai doc - https://www.chaijs.com/api/bdd/
