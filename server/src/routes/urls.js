@@ -142,7 +142,7 @@ router.get("/startWith/:startsWith", async (req, res) => {
     const { startsWith } = req.params;
     const urls = await allUrlsStartsWith(startsWith);
 
-    if (!urls) {
+    if (urls.length === 0) {
       return res
         .status(StatusCodes.NOT_FOUND)
         .send({ message: URLS_ENTITIES_NOT_FOUND_MESSAGE });
@@ -164,7 +164,7 @@ router.get("/contains/:contains", async (req, res) => {
     const { contains } = req.params;
     const urls = await allUrlsContains(contains);
 
-    if (!urls) {
+    if (urls.length === 0) {
       return res
         .status(StatusCodes.NOT_FOUND)
         .send({ message: URLS_ENTITIES_NOT_FOUND_MESSAGE });
@@ -179,14 +179,14 @@ router.get("/contains/:contains", async (req, res) => {
   }
 });
 
-router.get("/noContains/:noContains", async (req, res) => {
+router.get("/notContains/:notContains", async (req, res) => {
   // #swagger.tags = ['URL']
   // #swagger.summury = Gets all the short urls that contains a specific word/letter
   try {
-    const { noContains } = req.params;
-    const urls = await allUrlsNoContains(noContains);
+    const { notContains } = req.params;
+    const urls = await allUrlsNoContains(notContains);
 
-    if (!urls) {
+    if (urls.length === 0) {
       return res
         .status(StatusCodes.NOT_FOUND)
         .send({ message: URLS_ENTITIES_NOT_FOUND_MESSAGE });
