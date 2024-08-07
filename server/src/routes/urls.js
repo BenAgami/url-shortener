@@ -13,12 +13,10 @@ const {
   allUrlsNoContains,
 } = require("../services/urls");
 const {
-  URLS_ENTITIES_NOT_FOUND_MESSAGE,
-  URL_ENTITY_NOT_FOUND_MESSAGE,
-  SHORTER_URL_ENTITY_EXISTS_MESSAGE,
-  SHORTER_URL_NOT_FOUND_MESSAGE,
-  URL_NOT_FOUND_MESSAGE,
-} = require("../utils/consts");
+  AllUrlsNotFoundError,
+  ShorterUrlNotFoundError,
+  ShorterUrlExistsError,
+} = require("../utils/errors/urls");
 
 router.get("/all", async (_, res) => {
   // #swagger.tags = ['URL']
@@ -26,18 +24,14 @@ router.get("/all", async (_, res) => {
   try {
     const allUrls = await getAllUrls();
 
-    if (allUrls.length === 0) {
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .send({ message: URLS_ENTITIES_NOT_FOUND_MESSAGE });
+    if (allUrls) {
+      res.status(StatusCodes.OK).send(allUrls);
+    } else {
+      throw AllUrlsNotFoundError;
     }
-
-    res.status(StatusCodes.OK).send(allUrls);
   } catch (error) {
-    console.error("Error fetching data:", error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .send({ error: error.message });
+    console.error("Error fetching data:", error.message);
+    AllUrlsNotFoundError.HandleError(error, res);
   }
 });
 
@@ -48,20 +42,15 @@ router.get("/:shorterUrl", async (req, res) => {
     const { shorterUrl } = req.params;
     const url = await findOneByShorterUrl(shorterUrl);
 
-    if (!url) {
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .send({ message: URL_ENTITY_NOT_FOUND_MESSAGE });
+    if (url) {
+      const directUrl = url.originalUrl;
+      res.status(StatusCodes.MOVED_TEMPORARILY).redirect(directUrl);
+    } else {
+      throw ShorterUrlNotFoundError;
     }
-
-    const directUrl = url.originalUrl;
-
-    res.status(StatusCodes.MOVED_TEMPORARILY).redirect(directUrl);
   } catch (error) {
     console.error("Error fetching data:", error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .send({ error: error.message });
+    ShorterUrlNotFoundError.HandleError(error, res);
   }
 });
 
@@ -72,22 +61,17 @@ router.post("/createUrl", async (req, res) => {
     const { originalUrl, shorterUrl } = req.body;
     const newUrl = await addNewUrl(originalUrl, shorterUrl);
 
-    if (newUrl === StatusCodes.CONFLICT) {
-      return res
-        .status(StatusCodes.CONFLICT)
-        .send({ message: SHORTER_URL_ENTITY_EXISTS_MESSAGE });
+    if (newUrl) {
+      res.status(StatusCodes.CREATED).send(newUrl);
+    } else {
+      throw ShorterUrlExistsError;
     }
-
-    res.status(StatusCodes.CREATED).send(newUrl);
   } catch (error) {
     console.error("Error creating url:", error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .send({ error: error.message });
+    ShorterUrlExistsError.HandleError(error, res);
   }
 });
 
-//change it because i changed the service
 router.patch("/modifyUrl", async (req, res) => {
   // #swagger.tags = ['URL']
   // #swagger.summary = 'Updates an existing URL'
@@ -95,43 +79,34 @@ router.patch("/modifyUrl", async (req, res) => {
     const { shorterUrl, newOriginalUrl } = req.body;
     const newUrl = await modifyOriginalUrl(shorterUrl, newOriginalUrl);
 
-    if (newUrl === StatusCodes.NOT_FOUND) {
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .send({ message: SHORTER_URL_NOT_FOUND_MESSAGE });
+    if (newUrl) {
+      res.status(StatusCodes.OK).send(newUrl);
+    } else {
+      throw ShorterUrlNotFoundError;
     }
-
-    res.status(StatusCodes.OK).send(newUrl);
   } catch (error) {
     console.error("Error update url:", error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .send({ error: error.message });
+    ShorterUrlNotFoundError.HandleError(error, res);
   }
 });
 
-router.delete("/deleteUrl/:shortUrl", async (req, res) => {
+router.delete("/deleteUrl/:shorterUrl", async (req, res) => {
   // #swagger.tags = ['URL']
   // #swagger.summary = 'Deleting an existing URL'
   try {
-    const { shortUrl } = req.params;
+    const { shorterUrl } = req.params;
+    const deletedUrl = await deleteUrl(shorterUrl);
 
-    const deletedUrl = await deleteUrl(shortUrl);
-
-    if (deletedUrl === StatusCodes.NOT_FOUND) {
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .send({ message: URL_NOT_FOUND_MESSAGE });
+    if (deletedUrl) {
+      res
+        .status(StatusCodes.OK)
+        .send({ message: `${shorterUrl} deleted successfully` });
+    } else {
+      throw ShorterUrlNotFoundError;
     }
-
-    res
-      .status(StatusCodes.OK)
-      .send({ message: `${shortUrl} deleted successfully` });
   } catch (error) {
     console.error("Error deleting url:", error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .send({ error: error.message });
+    ShorterUrlNotFoundError.HandleError(error, res);
   }
 });
 
@@ -142,18 +117,14 @@ router.get("/startWith/:startsWith", async (req, res) => {
     const { startsWith } = req.params;
     const urls = await allUrlsStartsWith(startsWith);
 
-    if (urls.length === 0) {
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .send({ message: URLS_ENTITIES_NOT_FOUND_MESSAGE });
+    if (urls) {
+      res.status(StatusCodes.OK).send(urls);
+    } else {
+      throw AllUrlsNotFoundError;
     }
-
-    res.status(StatusCodes.OK).send(urls);
   } catch (error) {
     console.error("Error fetching data:", error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .send({ error: error.message });
+    AllUrlsNotFoundError.HandleError(error, res);
   }
 });
 
@@ -164,18 +135,14 @@ router.get("/contains/:contains", async (req, res) => {
     const { contains } = req.params;
     const urls = await allUrlsContains(contains);
 
-    if (urls.length === 0) {
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .send({ message: URLS_ENTITIES_NOT_FOUND_MESSAGE });
+    if (urls) {
+      res.status(StatusCodes.OK).send(urls);
+    } else {
+      throw AllUrlsNotFoundError;
     }
-
-    res.status(StatusCodes.OK).send(urls);
   } catch (error) {
     console.error("Error fetching data:", error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .send({ error: error.message });
+    AllUrlsNotFoundError.HandleError(error, res);
   }
 });
 
@@ -186,18 +153,14 @@ router.get("/notContains/:notContains", async (req, res) => {
     const { notContains } = req.params;
     const urls = await allUrlsNoContains(notContains);
 
-    if (urls.length === 0) {
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .send({ message: URLS_ENTITIES_NOT_FOUND_MESSAGE });
+    if (urls) {
+      res.status(StatusCodes.OK).send(urls);
+    } else {
+      throw AllUrlsNotFoundError;
     }
-
-    res.status(StatusCodes.OK).send(urls);
   } catch (error) {
     console.error("Error fetching data:", error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .send({ error: error.message });
+    AllUrlsNotFoundError.HandleError(error, res);
   }
 });
 

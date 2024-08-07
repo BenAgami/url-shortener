@@ -1,60 +1,75 @@
-const { StatusCodes } = require("http-status-codes");
 const { Op } = require("sequelize");
 
 const getUrlModel = require("../utils/models/url");
 
-const UrlModel = getUrlModel();
+const tableName = process.env.TABLE_NAME;
+const UrlModel = getUrlModel(tableName);
 
 const getAllUrls = async () => {
   const allUrls = await UrlModel.findAll();
+
+  if (allUrls.length === 0) {
+    return null;
+  }
+
   return allUrls;
 };
 
 const findOneByShorterUrl = async (shorterUrl) => {
   const url = await UrlModel.findOne({ where: { shorterUrl: shorterUrl } });
+
+  if (!url) {
+    return null;
+  }
+
   return url;
 };
 
 const addNewUrl = async (originalUrl, shorterUrl) => {
   const url = await findOneByShorterUrl(shorterUrl);
 
-  if (!url) {
-    const newUrl = getNewUrl(originalUrl, shorterUrl);
-    const addedNewUrl = await UrlModel.create(newUrl);
-    return addedNewUrl;
+  if (url) {
+    return null;
   }
 
-  return StatusCodes.CONFLICT;
+  const newUrl = getNewUrl(originalUrl, shorterUrl);
+  const addedNewUrl = await UrlModel.create(newUrl);
+
+  return addedNewUrl;
 };
 
 const modifyOriginalUrl = async (shorterUrl, newOriginalUrl) => {
   const url = await findOneByShorterUrl(shorterUrl);
 
-  if (url) {
-    const modifiedUrl = await url.update({
-      originalUrl: newOriginalUrl,
-    });
-
-    return modifiedUrl;
+  if (!url) {
+    return null;
   }
 
-  return StatusCodes.NOT_FOUND;
+  const modifiedUrl = await url.update({
+    originalUrl: newOriginalUrl,
+  });
+
+  return modifiedUrl;
 };
 
 const deleteUrl = async (shorterUrl) => {
   const url = await findOneByShorterUrl(shorterUrl);
 
-  if (url) {
-    return await url.destroy();
+  if (!url) {
+    return null;
   }
 
-  return StatusCodes.NOT_FOUND;
+  return await url.destroy();
 };
 
 const allUrlsStartsWith = async (letters) => {
   const urlsStartsWith = await UrlModel.findAll({
     where: { shorterUrl: { [Op.startsWith]: letters } },
   });
+
+  if (urlsStartsWith.length === 0) {
+    return null;
+  }
 
   return urlsStartsWith;
 };
@@ -64,6 +79,10 @@ const allUrlsContains = async (letters) => {
     where: { shorterUrl: { [Op.substring]: letters } },
   });
 
+  if (urlsContains.length === 0) {
+    return null;
+  }
+
   return urlsContains;
 };
 
@@ -71,6 +90,10 @@ const allUrlsNoContains = async (letters) => {
   const urlsNoContains = await UrlModel.findAll({
     where: { shorterUrl: { [Op.notLike]: `%${letters}%` } },
   });
+
+  if (urlsNoContains.length === 0) {
+    return null;
+  }
 
   return urlsNoContains;
 };

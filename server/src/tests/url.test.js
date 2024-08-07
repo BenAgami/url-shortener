@@ -7,14 +7,11 @@ const {
   deleteAllUrls,
   addNewUrl,
   findOneByShorterUrl,
+  deleteUrl,
 } = require("../services/urls");
-const { REAL_URL, MOCKED_URL, MODIFIED_URL } = require("../utils/consts");
+const { REAL_URL, MOCKED_URL, MODIFIED_URL } = require("./url/consts");
 
 before(async () => {
-  await deleteAllUrls();
-});
-
-beforeEach(async () => {
   await deleteAllUrls();
   await addNewUrl(REAL_URL.originalUrl, REAL_URL.shorterUrl);
 });
@@ -30,6 +27,10 @@ describe("Get", () => {
 
       expect(res.status).to.equal(StatusCodes.OK);
       expect(res.body).to.have.length.above(0);
+    });
+
+    after(async () => {
+      await addNewUrl(REAL_URL.originalUrl, REAL_URL.shorterUrl);
     });
 
     it("Should return a 404 status code if urls not found in db", async () => {
@@ -62,8 +63,6 @@ describe("Get", () => {
 
   describe("Gets entities by starts with a specific string", () => {
     it("Should return a 200 status code and all the entities that starts with a specific string", async () => {
-      await addNewUrl(MOCKED_URL.originalUrl, MOCKED_URL.shorterUrl);
-
       const res = await request(app).get(
         `/url/startWith/${REAL_URL.shorterUrl[0]}`
       );
@@ -80,14 +79,12 @@ describe("Get", () => {
 
   describe("Gets entities by contains a specific string", () => {
     it("Should return a 200 status code and all the entities that contains a specific string", async () => {
-      await addNewUrl(MOCKED_URL.originalUrl, MOCKED_URL.shorterUrl);
-
       const res = await request(app).get(
         `/url/contains/${REAL_URL.shorterUrl[1]}`
       );
 
       expect(res.status).to.equal(StatusCodes.OK);
-      expect(res.body).to.have.lengthOf(2);
+      expect(res.body).to.have.lengthOf(1);
     });
 
     it("Should return a 404 status code if shorter urls that contains a specific string not found", async () => {
@@ -98,12 +95,10 @@ describe("Get", () => {
 
   describe("Gets entities that don't contain a specific string", () => {
     it("Should return a 200 status code and all the entities that don't contain a specific string", async () => {
-      await addNewUrl(MOCKED_URL.originalUrl, MOCKED_URL.shorterUrl);
-
       const res = await request(app).get("/url/notContains/!");
 
       expect(res.status).to.equal(StatusCodes.OK);
-      expect(res.body).to.have.lengthOf(2);
+      expect(res.body).to.have.lengthOf(1);
     });
 
     it("Should return a 404 status code if shorter urls that don't contain a specific string not found", async () => {
@@ -116,6 +111,10 @@ describe("Get", () => {
 });
 
 describe("Post", () => {
+  after(async () => {
+    await deleteUrl(MOCKED_URL.shorterUrl);
+  });
+
   describe("Creates a new shorter url entity", () => {
     it("Should return a 201 status code and the new url entity", async () => {
       const newUrlToAdd = await findOneByShorterUrl(MOCKED_URL.shorterUrl);
@@ -171,6 +170,11 @@ describe("Delete", () => {
 
       const deletedUrl = await findOneByShorterUrl(REAL_URL.shorterUrl);
       expect(deletedUrl).to.be.a("null");
+    });
+
+    before(async () => {
+      await deleteAllUrls();
+      await addNewUrl(REAL_URL.originalUrl, REAL_URL.shorterUrl);
     });
 
     it("Should return a 404 status code if shorter url not found", async () => {
