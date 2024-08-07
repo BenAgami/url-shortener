@@ -13,10 +13,11 @@ const {
   allUrlsNoContains,
 } = require("../services/urls");
 const {
-  AllUrlsNotFoundError,
-  ShorterUrlNotFoundError,
-  ShorterUrlExistsError,
+  NotFoundError,
+  ConflictError,
+  HandleError,
 } = require("../utils/errors/urls");
+const { errorMessages } = require("../utils/consts");
 
 router.get("/all", async (_, res) => {
   // #swagger.tags = ['URL']
@@ -27,11 +28,11 @@ router.get("/all", async (_, res) => {
     if (allUrls) {
       res.status(StatusCodes.OK).send(allUrls);
     } else {
-      throw AllUrlsNotFoundError;
+      throw new NotFoundError(errorMessages.ALL_URLS_NOT_FOUND_MESSAGE);
     }
   } catch (error) {
     console.error("Error fetching data:", error.message);
-    AllUrlsNotFoundError.HandleError(error, res);
+    HandleError(error, res);
   }
 });
 
@@ -46,11 +47,11 @@ router.get("/:shorterUrl", async (req, res) => {
       const directUrl = url.originalUrl;
       res.status(StatusCodes.MOVED_TEMPORARILY).redirect(directUrl);
     } else {
-      throw ShorterUrlNotFoundError;
+      throw new NotFoundError(errorMessages.SHORTER_URL_NOT_FOUND_MESSAGE);
     }
   } catch (error) {
     console.error("Error fetching data:", error);
-    ShorterUrlNotFoundError.HandleError(error, res);
+    HandleError(error, res);
   }
 });
 
@@ -64,11 +65,11 @@ router.post("/createUrl", async (req, res) => {
     if (newUrl) {
       res.status(StatusCodes.CREATED).send(newUrl);
     } else {
-      throw ShorterUrlExistsError;
+      throw new ConflictError(errorMessages.SHORTER_URL_EXISTS_MESSAGE);
     }
   } catch (error) {
     console.error("Error creating url:", error);
-    ShorterUrlExistsError.HandleError(error, res);
+    HandleError(error, res);
   }
 });
 
@@ -82,11 +83,11 @@ router.patch("/modifyUrl", async (req, res) => {
     if (newUrl) {
       res.status(StatusCodes.OK).send(newUrl);
     } else {
-      throw ShorterUrlNotFoundError;
+      throw new NotFoundError(errorMessages.SHORTER_URL_NOT_FOUND_MESSAGE);
     }
   } catch (error) {
     console.error("Error update url:", error);
-    ShorterUrlNotFoundError.HandleError(error, res);
+    HandleError(error, res);
   }
 });
 
@@ -102,11 +103,11 @@ router.delete("/deleteUrl/:shorterUrl", async (req, res) => {
         .status(StatusCodes.OK)
         .send({ message: `${shorterUrl} deleted successfully` });
     } else {
-      throw ShorterUrlNotFoundError;
+      throw new NotFoundError(errorMessages.SHORTER_URL_NOT_FOUND_MESSAGE);
     }
   } catch (error) {
     console.error("Error deleting url:", error);
-    ShorterUrlNotFoundError.HandleError(error, res);
+    HandleError(error, res);
   }
 });
 
@@ -120,11 +121,11 @@ router.get("/startWith/:startsWith", async (req, res) => {
     if (urls) {
       res.status(StatusCodes.OK).send(urls);
     } else {
-      throw AllUrlsNotFoundError;
+      throw new NotFoundError(errorMessages.ALL_URLS_NOT_FOUND_MESSAGE);
     }
   } catch (error) {
     console.error("Error fetching data:", error);
-    AllUrlsNotFoundError.HandleError(error, res);
+    HandleError(error, res);
   }
 });
 
@@ -138,11 +139,11 @@ router.get("/contains/:contains", async (req, res) => {
     if (urls) {
       res.status(StatusCodes.OK).send(urls);
     } else {
-      throw AllUrlsNotFoundError;
+      throw new NotFoundError(errorMessages.ALL_URLS_NOT_FOUND_MESSAGE);
     }
   } catch (error) {
     console.error("Error fetching data:", error);
-    AllUrlsNotFoundError.HandleError(error, res);
+    HandleError(error, res);
   }
 });
 
@@ -156,11 +157,11 @@ router.get("/notContains/:notContains", async (req, res) => {
     if (urls) {
       res.status(StatusCodes.OK).send(urls);
     } else {
-      throw AllUrlsNotFoundError;
+      throw new NotFoundError(errorMessages.ALL_URLS_NOT_FOUND_MESSAGE);
     }
   } catch (error) {
     console.error("Error fetching data:", error);
-    AllUrlsNotFoundError.HandleError(error, res);
+    HandleError(error, res);
   }
 });
 
