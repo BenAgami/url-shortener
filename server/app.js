@@ -17,10 +17,14 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cors());
 app.use(morgan("combined"));
-initialConnectionToDb().then(() => {
-  app.use(connectToDb);
-  app.use(disconnectFromDb);
-});
+initialConnectionToDb()
+  .then(() => {
+    app.use(connectToDb);
+    app.use(disconnectFromDb);
+  })
+  .catch((error) => {
+    console.error(error);
+  });
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/url", urlRouters);
 

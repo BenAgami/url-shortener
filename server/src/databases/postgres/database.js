@@ -17,9 +17,10 @@ const sequelizeConnection = () => {
 };
 
 const initialConnectionToDb = async () => {
-  const sequelizeUrlDB = await sequelizeConnection();
+  let sequelizeUrlDB;
 
   try {
+    sequelizeUrlDB = await sequelizeConnection();
     await sequelizeUrlDB.authenticate();
     console.log("Initial connection has been established successfully.");
     await sequelizeUrlDB.sync();
@@ -27,10 +28,16 @@ const initialConnectionToDb = async () => {
   } catch (error) {
     console.error("Unable to initial connect to the database:", error);
     throw error;
+  } finally {
+    if (sequelizeUrlDB) {
+      try {
+        await sequelizeUrlDB.close();
+        console.log("Initial connection closed.");
+      } catch (error) {
+        console.log("Unable to close the initial connection:", error);
+      }
+    }
   }
-
-  await sequelizeUrlDB.close();
-  console.log("Initial connection closed.");
 };
 
 module.exports = { sequelizeConnection, initialConnectionToDb };
