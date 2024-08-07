@@ -4,12 +4,7 @@ const { sequelizeConnection } = require("../../databases/postgres/database");
 
 const sequelizeUrlDB = sequelizeConnection();
 
-const getUrlModel = () => {
-  const tableName =
-    process.env.NODE_ENV === "test"
-      ? process.env.TESTING_TABLE
-      : process.env.DEV_TABLE;
-
+const getUrlModel = (tableName) => {
   const UrlModel = sequelizeUrlDB.define(tableName, {
     id: {
       type: Sequelize.INTEGER,
